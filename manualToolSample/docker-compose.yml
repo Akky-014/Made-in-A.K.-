@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: django_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    command: >
+      bash -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py shell -c 'from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser(\"admin\", \"admin@example.com\", \"adminpassword\") if not User.objects.filter(username=\"admin\").exists() else print(\"Superuser already exists\")' &&
+      python /usr/src/app/insert_data.py &&
+      python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./manualToolSample:/usr/src/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DB_NAME=django_db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=db
+      - DJANGO_SUPERUSER_USERNAME=admin  # 直接値を記述
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com  # 直接値を記述
+      - DJANGO_SUPERUSER_PASSWORD=adminpassword  # 直接値を記述
+      - DJANGO_SETTINGS_MODULE=manualToolSample.settings  # プロジェクトの設定ファイルを指定
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

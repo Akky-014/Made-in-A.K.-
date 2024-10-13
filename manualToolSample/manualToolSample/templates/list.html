@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block customcss %}
+{% endblock customcss %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  社内ツール
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class ='container'>
+    {% for item in object_list %}
+    <div class="alert alert-success" role="alert">
+        <p>イベント名：<a href="{% url 'detail' item.pk %}">{{item.eventName}}</a></p>
+        <p>package Name：{{item.packageName}}</p>
+        <p>component Name：{{item.componentName}}</p>
+        <p>component Name：{{item.componentName}}</p>
+        <p>nodeView Id：{{item.nodeViewId}}</p>
+    </div>
+    {% endfor %}
+    <div style="display: flex; justify-content: center">
+        <a href="{% url 'home' %}">ホーム</a>
+        <a style="margin-left: 35px"  href="{% url 'logout' %}">ログアウト</a>
+    </div>
+</div>
+{% endblock content %}

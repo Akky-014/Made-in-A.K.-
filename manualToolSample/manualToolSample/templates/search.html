@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block customcss %}
+<style>
+    .dropdown {
+        width: 200px;
+        margin: 50px auto;
+    }
+    .dropdown select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    .selected-option {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .container {
+        display: flex;
+        justify-content: center; /* 子要素を水平方向に中央揃え */
+        align-items: center; /* 子要素を垂直方向に中央揃え */
+    }
+    .search-container {
+        width: 1800px;
+        justify-content: center; /* 子要素を水平方向の中央に配置 */
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .search-header {
+        font-size: 1.5rem;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .form-group {
+        margin-bottom: 30px;
+    }
+    .form-group label {
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .btn-search-container {
+        margin-top: 80px;
+        margin-bottom: 20px;
+        text-align: center; /* ボタンを中央揃えにする */
+    }
+
+    .btn-search {
+        display: inline-block; /* ボタンをインラインブロックにする */
+        padding: 10px 20px; /* 必要に応じてパディングを調整 */
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 1rem;
+        cursor: pointer;
+        border: none; /* デフォルトのボーダーを削除 */
+    }
+</style>
+{% endblock customcss %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  社内ツール
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="search-container">
+        <div class="search-header">検索画面</div>
+        <form method="GET" action="{% url 'read_list' %}">
+            <div class="form-group">
+                <label for="event-name">イベント名</label>
+                <select id="event-name" name="event_name" class="form-control">
+                    <option disabled selected value="">Select an event</option>
+                    <option value="Blue Tooth">Blue Tooth</option>
+                    <option value="Android Auto">Android Auto</option>
+                    <option value="Setting">Setting</option>
+                    <option value="Alexa">Alexa</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="package-name">Package Name</label>
+                <input type="text" id="package-name" name="package_name" placeholder="Enter package name">
+            </div>
+            <div class="form-group">
+                <label for="component-name">Component Name</label>
+                <input type="text" id="component-name" name="component_name" placeholder="Enter component name">
+            </div>
+            <div class="form-group">
+                <label for="node-view-id">Node View ID</label>
+                <input type="text" id="node-view-id" name="node_view_id" placeholder="Enter node view ID">
+            </div>
+            <div class="form-group">
+                <label for="node-address">Node Address</label>
+                <input type="text" id="node-address" name="node_address" placeholder="Enter node address">
+            </div>
+             <div class="btn-search-container">
+                <button type="submit" class="btn-search">検索</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

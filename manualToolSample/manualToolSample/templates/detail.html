@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block customcss %}
+{% endblock customcss %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  個別投稿
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class ='container'>
+    <div class="alert alert-success" role="alert">
+        <p>イベント名：{{object.eventName}}</p>
+        <p>packageName：{{object.packageName}}</p>
+        <p>componentName：{{object.componentName}}</p>
+        <p>nodeViewId：{{object.nodeViewId}}</p>
+        <p>nodeAddress：{{object.nodeAddress}}</p>
+        {% if object.images %}
+            <p><img src='{{ object.images.url }}' class= "img-fluid rounded mx-auto" width=400></p>
+        {% endif %}
+        <p>説明：{{object.detail}}</p>
+    </div>
+</div>
+{% endblock content %}

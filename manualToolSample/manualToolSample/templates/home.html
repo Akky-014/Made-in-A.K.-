@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block customcss %}
+<style>
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+        margin-bottom: 10px; /* 要素間の隙間を指定 */
+    }
+    .card-link:hover {
+        text-decoration: none;
+    }
+    .custom-space {
+        padding-left: 11px; /* 特定のカードにのみ適用するパディング */
+        height: 0px; /* 縦の高さを100pxに設定 */
+        visibility: hidden;
+    }
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        max-width: 700px; /* 最大幅を指定してカードの横幅を統一 */
+        width: 100%; /* 幅を明示的に指定 */
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .debug-border {
+        border: 2px solid red; /* デバッグ用の枠線 */
+    }
+</style>
+{% endblock customcss %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  社内ツール
+</div>
+{% endblock header %}
+
+{% block content %}
+<div class="container mt-5">
+   <div class="align-items-center justify-content-center gap-3">
+      <a href="{% url 'signup' %}" class="card-link w-50 ">
+       <div class="card p-3">
+         <div class="card-body">
+           <h5 class="card-title">Sign in</h5>
+           <p class="card-text">新規ユーザー登録</p>
+         </div>
+       </div>
+     </a>
+     <a href="{% url 'read_list' %}" class="card-link w-50">
+       <div class="card p-3">
+         <div class="card-body">
+           <h5 class="card-title">List</h5>
+           <p class="card-text">画面解説リスト</p>
+         </div>
+       </div>
+     </a>
+     <a href="{% url 'search' %}" class="card-link w-50">
+       <div class="card p-3">
+         <div class="card-body">
+           <h5 class="card-title">Search</h5>
+           <p class="card-text">検索</p>
+         </div>
+       </div>
+     </a>
+     <a href="{% url 'create' %}" class="card-link w-50">
+       <div class="card p-3">
+         <div class="card-body">
+           <h5 class="card-title">Regist</h5>
+           <p class="card-text">画面解説追加登録</p>
+         </div>
+       </div>
+     </a>
+   </div>
+</div>
+{% endblock content %}
