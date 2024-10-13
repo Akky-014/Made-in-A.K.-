@@ -17,13 +17,13 @@ jobs:
       run: |
         # .sshディレクトリを作成
         mkdir -p ~/.ssh
-        # GitHub Secretsに保存したBase64エンコードされた秘密鍵をデコードして使用
-        echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/id_rsa
+        # GitHub Secretsに保存した秘密鍵をそのまま使う
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
         # 適切なパーミッションを設定
         chmod 600 ~/.ssh/id_rsa
 
         # SSH接続してEC2上でコマンドを実行
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -tt ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           cd /home/ubuntu/manualToolSample  # あなたのアプリのパスに変更
           git pull origin main
           source venv/bin/activate
@@ -31,6 +31,7 @@ jobs:
           python manage.py migrate
           sudo systemctl restart gunicorn  # アプリケーションサーバーを再起動
         EOF
+
 
 
 
