@@ -15,18 +15,17 @@ jobs:
 
     - name: Set up SSH
       run: |
-        mkdir -p /home/runner/.ssh
-        echo "$SSH_PRIVATE_KEY" > /home/runner/.ssh/id_rsa
-        chmod 600 /home/runner/.ssh/id_rsa
-        eval $(ssh-agent -s)
-        ssh-add /home/runner/.ssh/id_rsa
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
     - name: SSH and Deploy
       env:
         EC2_HOST: ${{ secrets.EC2_HOST }}
         EC2_USER: ${{ secrets.EC2_USER }}
       run: |
-        ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+        ssh -i ~/.ssh/id_rsa $EC2_USER@$EC2_HOST << 'EOF'
           cd /home/ubuntu/manualToolSample
           git pull origin main
           source venv/bin/activate
@@ -34,4 +33,5 @@ jobs:
           python manage.py migrate
           sudo systemctl restart gunicorn
         EOF
+
 
