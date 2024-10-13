@@ -13,20 +13,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up SSH
-      run: |
-        mkdir -p /home/runner/.ssh
-        echo "$SSH_PRIVATE_KEY_BASE64" | base64 -d > /home/runner/.ssh/id_rsa
-        chmod 600 /home/runner/.ssh/id_rsa
-        eval $(ssh-agent -s)
-        ssh-add /home/runner/.ssh/id_rsa
-
     - name: SSH and Deploy
       env:
         EC2_HOST: ${{ secrets.EC2_HOST }}
         EC2_USER: ${{ secrets.EC2_USER }}
       run: |
-        ssh -o StrictHostKeyChecking=no -i /home/runner/.ssh/id_rsa $EC2_USER@$EC2_HOST << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i /home/ubuntu/manualToolSample/ubuntu20241012.pem $EC2_USER@$EC2_HOST << 'EOF'
           cd /home/ubuntu/manualToolSample
           git pull origin main
           source venv/bin/activate
