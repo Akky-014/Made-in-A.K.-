@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # mainブランチにプッシュした時に実行
+      - main  # mainブランチにプッシュされたときに実行
 
 jobs:
   deploy:
@@ -13,18 +13,31 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up SSH
+      run: |
+        # .sshディレクトリを作成
+        mkdir -p ~/.ssh
+        # GitHub Secretsに保存した秘密鍵を使用
+        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+        # 適切なパーミッションを設定
+        chmod 600 ~/.ssh/id_rsa
+        # ssh-agentを起動して鍵をロード
+        eval $(ssh-agent -s)
+        ssh-add ~/.ssh/id_rsa
+
     - name: SSH and Deploy
       env:
         EC2_HOST: ${{ secrets.EC2_HOST }}
         EC2_USER: ${{ secrets.EC2_USER }}
       run: |
-        ssh -o StrictHostKeyChecking=no -i /home/ubuntu/manualToolSample/ubuntu20241012.pem $EC2_USER@$EC2_HOST << 'EOF'
-          cd /home/ubuntu/manualToolSample
+        # EC2にSSHで接続し、デプロイコマンドを実行
+        ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
+          cd /home/ubuntu/manualToolSample  # あなたのアプリのパスに変更
           git pull origin main
           source venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate
-          sudo systemctl restart gunicorn
+          sudo systemctl restart gunicorn  # アプリケーションサーバーを再起動
         EOF
 
 
