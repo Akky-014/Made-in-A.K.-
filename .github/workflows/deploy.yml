@@ -33,9 +33,10 @@ jobs:
           python manage.py migrate
           sudo systemctl restart gunicorn
           echo "Finished commands, exiting SSH"
-          exit  # SSHセッションを終了
+          exec exit  # SSHセッションを確実に終了
         EOF
         echo "Deployment complete"
+
 
 
 
