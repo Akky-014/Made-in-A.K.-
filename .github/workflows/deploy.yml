@@ -22,16 +22,20 @@ jobs:
         EC2_USER: ${{ secrets.EC2_USER }}
         EC2_PASSWORD: ${{ secrets.EC2_PASSWORD }}
       run: |
+        echo "Starting deployment"
         sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -tt $EC2_USER@$EC2_HOST << 'EOF'
-          cd /home/ubuntu/manualToolSample  # Gitの更新を行うディレクトリ
+          echo "Starting commands on EC2"
+          cd /home/ubuntu/manualToolSample
           git pull origin main
-          cd /home/ubuntu/manualToolSample/manualToolSample  # manage.pyがあるディレクトリ
-          source /home/ubuntu/venv/bin/activate  # 仮想環境のパス
+          cd /home/ubuntu/manualToolSample/manualToolSample
+          source /home/ubuntu/venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate
           sudo systemctl restart gunicorn
+          echo "Finished commands, exiting SSH"
           exit  # SSHセッションを終了
         EOF
+        echo "Deployment complete"
 
 
 
