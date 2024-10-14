@@ -22,7 +22,7 @@ jobs:
         EC2_USER: ${{ secrets.EC2_USER }}
         EC2_PASSWORD: ${{ secrets.EC2_PASSWORD }}
       run: |
-        sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -t $EC2_USER@$EC2_HOST << 'EOF'
+        sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -tt $EC2_USER@$EC2_HOST << 'EOF'
           cd /home/ubuntu/manualToolSample  # Gitの更新を行うディレクトリ
           git pull origin main
           cd /home/ubuntu/manualToolSample/manualToolSample  # manage.pyがあるディレクトリ
@@ -32,5 +32,6 @@ jobs:
           sudo systemctl restart gunicorn
           exit  # SSHセッションを終了
         EOF
+
 
 
