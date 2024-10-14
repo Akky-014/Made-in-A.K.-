@@ -23,17 +23,10 @@ jobs:
         EC2_PASSWORD: ${{ secrets.EC2_PASSWORD }}
       run: |
         sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -tt $EC2_USER@$EC2_HOST << 'EOF'
-          cd /home/ubuntu/manualToolSample  # あなたのアプリのパスに変更
+          cd /home/ubuntu/manualToolSample  # アプリのパス
           git pull origin main
-          source venv/bin/activate
+          source /home/ubuntu/venv/bin/activate  # 仮想環境の正しいパスに変更
           pip install -r requirements.txt
           python manage.py migrate
           sudo systemctl restart gunicorn
         EOF
-
-
-
-
-
-
-
