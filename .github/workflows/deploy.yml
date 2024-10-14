@@ -31,11 +31,13 @@ jobs:
           source /home/ubuntu/venv/bin/activate
           pip install -r requirements.txt
           python manage.py migrate
-          sudo systemctl restart gunicorn
+          echo "Restarting gunicorn"
+          sudo systemctl restart gunicorn || echo "Failed to restart gunicorn"
           echo "Finished commands, exiting SSH"
-          exec exit  # SSHセッションを確実に終了
+          exit  # SSHセッションを終了
         EOF
         echo "Deployment complete"
+
 
 
 
