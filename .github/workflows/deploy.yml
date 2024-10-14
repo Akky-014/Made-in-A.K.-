@@ -23,7 +23,7 @@ jobs:
         EC2_PASSWORD: ${{ secrets.EC2_PASSWORD }}
       run: |
         echo "Starting deployment"
-        sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -tt $EC2_USER@$EC2_HOST << 'EOF'
+        sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -t $EC2_USER@$EC2_HOST << 'EOF'
           echo "Starting commands on EC2"
           cd /home/ubuntu/manualToolSample
           git pull origin main
@@ -36,8 +36,9 @@ jobs:
           echo "Finished commands, exiting SSH"
           exit  # SSHセッションを終了
         EOF
-        sleep 5  # セッション終了を確認するための待機時間
+        sleep 5  # セッション終了確認のための短い待機時間
         echo "Deployment complete"
+        echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認
 
 
 
