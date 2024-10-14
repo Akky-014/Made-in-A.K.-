@@ -36,6 +36,7 @@ jobs:
           echo "Finished commands, exiting SSH"
           exit  # SSHセッションを終了
         EOF
+        sleep 5  # セッション終了を確認するための待機時間
         echo "Deployment complete"
 
 
