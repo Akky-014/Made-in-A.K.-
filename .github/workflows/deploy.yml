@@ -64,7 +64,7 @@ jobs:
         EOF
         sleep 5  # セッション終了確認のための短い待機時間
         echo "Deployment complete"
-        echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認
+        echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認する
 
 
 
