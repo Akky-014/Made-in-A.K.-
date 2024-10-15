@@ -50,7 +50,7 @@ jobs:
           # Gunicornの既存プロセスを確認して停止
           if pgrep gunicorn; then
             echo "Stopping Gunicorn"
-            sudo kill -9 \$(pgrep gunicorn) || echo "Failed to kill Gunicorn"
+            sudo kill -9 $(pgrep gunicorn) || echo "Failed to kill Gunicorn"
           fi
 
           # Gunicornを再起動
@@ -69,6 +69,7 @@ jobs:
         sleep 5  # セッション終了確認のための短い待機時間
         echo "Deployment complete"
         echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認する
+
 
 
 
