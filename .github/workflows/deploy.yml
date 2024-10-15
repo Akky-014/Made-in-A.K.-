@@ -25,7 +25,16 @@ jobs:
         echo "Starting deployment"
         sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -t $EC2_USER@$EC2_HOST << 'EOF'
           echo "Starting commands on EC2"
+
+          # Gitリポジトリがあるディレクトリに移動
           cd /home/ubuntu/manualToolSample || exit 1
+
+          # Gitリポジトリかどうか確認
+          if [ ! -d ".git" ]; then
+            echo "Error: Not a git repository. Exiting."
+            exit 1
+          fi
+
           git pull origin main || exit 1
           
           cd /home/ubuntu/manualToolSample/manualToolSample || exit 1
