@@ -35,6 +35,10 @@ jobs:
             exit 1
           fi
 
+          # Git pullの設定をリベースしないように変更
+          git config pull.rebase false
+
+          # 最新のコードを取得
           git pull origin main || exit 1
           
           cd /home/ubuntu/manualToolSample/manualToolSample || exit 1
@@ -65,6 +69,7 @@ jobs:
         sleep 5  # セッション終了確認のための短い待機時間
         echo "Deployment complete"
         echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認する
+
 
 
 
