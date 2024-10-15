@@ -25,20 +25,43 @@ jobs:
         echo "Starting deployment"
         sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -t $EC2_USER@$EC2_HOST << 'EOF'
           echo "Starting commands on EC2"
+          
+          # Move to the application directory
           cd /home/ubuntu/manualToolSample
+          
+          # Pull latest code
           git pull origin main
-          cd /home/ubuntu/manualToolSample/manualToolSample
+          
+          # Activate virtual environment
           source /home/ubuntu/venv/bin/activate
+          
+          # Install dependencies
           pip install -r requirements.txt
+          
+          # Run migrations
           python manage.py migrate
-          echo "Restarting gunicorn"
+
+          # Ensure Gunicorn is running and restart it
+          echo "Checking Gunicorn status"
+          sudo systemctl is-active gunicorn || echo "Gunicorn is not active, starting..."
           sudo systemctl restart gunicorn || echo "Failed to restart gunicorn"
-          echo "Finished commands, exiting SSH"
-          exit  # SSHセッションを終了
+
+          # Check Nginx configuration and restart if needed
+          echo "Checking Nginx configuration"
+          sudo nginx -t && sudo systemctl restart nginx || echo "Nginx configuration failed, not restarting"
+
+          echo "Deployment completed on EC2"
+          
+          # Exit the SSH session
+          exit
         EOF
-        sleep 5  # セッション終了確認のための短い待機時間
+
+        # Sleep for a short period to allow SSH session to fully exit
+        sleep 5
+        
+        # Confirm successful completion
         echo "Deployment complete"
-        echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認
+        echo $?  # Check exit status of the last SSH command
 
 
 
