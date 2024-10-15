@@ -1,21 +1,92 @@
 {% extends 'base.html' %}
 
+{% block customcss %}
+<style>
+    /* コンテナを中央に揃える */
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* 画面全体の高さ */
+    }
+
+    /* フォームのデザイン */
+    form {
+        width: 600px; /* フォームの幅 */
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 各フィールドのスタイル */
+    form p {
+        margin-bottom: 15px;
+    }
+
+    form input[type="text"], form textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    form input[type="file"] {
+        padding: 5px;
+    }
+
+    /* 送信ボタンのスタイル */
+    form input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    form input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    /* リンクを左に揃え */
+    .link-container {
+        display: flex;
+        justify-content: left;
+        margin-top: 20px;
+    }
+</style>
+{% endblock customcss %}
+
+{% block header %}
+<div class="alert alert-primary" role="alert">
+  社内ツール
+</div>
+{% endblock header %}
+
 {% block content %}
+<div class="form-container">
+    {% if user.is_authenticated %}
+    <form action='' method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <p>イベント名：<input type="text" name="eventName" value="{{ form.eventName.value }}"></p>
+        <p>packageName：<input type="text" name="packageName" value="{{ form.packageName.value }}"></p>
+        <p>componentName：<input type="text" name="componentName" value="{{ form.componentName.value }}"></p>
+        <p>nodeViewId：<input type="text" name="nodeViewId" value="{{ form.nodeViewId.value }}"></p>
+        <p>nodeAddress：<input type="text" name="nodeAddress" value="{{ form.nodeAddress.value }}"></p>
+        <p>詳細：<textarea name="detail">{{ form.detail.value }}</textarea></p>
+        <p>画像：<input type="file" name="images"></p>
 
-{% if user.is_authenticated %}
-<form action='' method="POST" enctype="multipart/form-data">{% csrf_token %}
-<p>タイトル：<input type="text" name="title"></p>
-<p>内容：<input type="text" name="content"></p>
-<p>画像：<input type="file" name="images"></p>
-<input type="hidden" name="author" value="{{ user.username }}">
+        <input type="submit" value="作成する">
+    </form>
+    {% else %}
+    <p>ログインしてください</p>
+    {% endif %}
+</div>
 
-<input type="submit" value="作成する">
-</form>
-{% else %}
-ログインしてください
-{% endif %}
-    <div style="display: flex; justify-content: left">
-        <a href="{% url 'home' %}">ホーム</a>
-        <a style="margin-left: 35px"  href="{% url 'logout' %}">ログアウト</a>
-    </div>
+<div class="link-container">
+    <a href="{% url 'home' %}">ホーム</a>
+    <a style="margin-left: 35px" href="{% url 'logout' %}">ログアウト</a>
+</div>
 {% endblock content %}
