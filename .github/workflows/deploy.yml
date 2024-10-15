@@ -25,43 +25,38 @@ jobs:
         echo "Starting deployment"
         sshpass -p $EC2_PASSWORD ssh -o StrictHostKeyChecking=no -o PreferredAuthentications=password -t $EC2_USER@$EC2_HOST << 'EOF'
           echo "Starting commands on EC2"
+          cd /home/ubuntu/manualToolSample || exit 1
+          git pull origin main || exit 1
           
-          # Move to the application directory
-          cd /home/ubuntu/manualToolSample
+          cd /home/ubuntu/manualToolSample/manualToolSample || exit 1
+          source /home/ubuntu/venv/bin/activate || exit 1
           
-          # Pull latest code
-          git pull origin main
-          
-          # Activate virtual environment
-          source /home/ubuntu/venv/bin/activate
-          
-          # Install dependencies
-          pip install -r requirements.txt
-          
-          # Run migrations
-          python manage.py migrate
+          pip install -r requirements.txt || exit 1
+          python manage.py migrate || exit 1
 
-          # Ensure Gunicorn is running and restart it
-          echo "Checking Gunicorn status"
-          sudo systemctl is-active gunicorn || echo "Gunicorn is not active, starting..."
-          sudo systemctl restart gunicorn || echo "Failed to restart gunicorn"
+          # Gunicornの既存プロセスを確認して停止
+          if pgrep gunicorn; then
+            echo "Stopping Gunicorn"
+            sudo kill -9 \$(pgrep gunicorn) || echo "Failed to kill Gunicorn"
+          fi
 
-          # Check Nginx configuration and restart if needed
-          echo "Checking Nginx configuration"
-          sudo nginx -t && sudo systemctl restart nginx || echo "Nginx configuration failed, not restarting"
+          # Gunicornを再起動
+          echo "Starting Gunicorn"
+          sudo systemctl restart gunicorn || echo "Failed to restart Gunicorn"
 
-          echo "Deployment completed on EC2"
-          
-          # Exit the SSH session
-          exit
+          # Nginxがあれば再起動
+          if systemctl is-active --quiet nginx; then
+            echo "Restarting Nginx"
+            sudo systemctl restart nginx || echo "Failed to restart Nginx"
+          fi
+
+          echo "Finished commands, exiting SSH"
+          exit  # SSHセッションを終了
         EOF
-
-        # Sleep for a short period to allow SSH session to fully exit
-        sleep 5
-        
-        # Confirm successful completion
+        sleep 5  # セッション終了確認のための短い待機時間
         echo "Deployment complete"
-        echo $?  # Check exit status of the last SSH command
+        echo $?  # 最後に実行したSSHセッションの終了ステータスコードを確認
+
 
 
 
